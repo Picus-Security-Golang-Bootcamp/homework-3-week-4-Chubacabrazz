@@ -9,7 +9,7 @@ import (
 	models "github.com/Chubacabrazz/book-db/file_services/models"
 )
 
-var Booklar []models.Book
+var BookList []models.Book
 
 func ReadBooksWithWorkerPool(path string) error {
 	const numJobs = 5
@@ -18,7 +18,6 @@ func ReadBooksWithWorkerPool(path string) error {
 	wg := sync.WaitGroup{}
 
 	for w := 1; w <= 5; w++ {
-		fmt.Println("worker starting", w)
 		wg.Add(1)
 		go toStruct(jobs, results, &wg)
 	}
@@ -31,7 +30,6 @@ func ReadBooksWithWorkerPool(path string) error {
 
 		for _, line := range lines[1:] {
 
-			fmt.Println("line", line[0])
 			jobs <- line
 		}
 
@@ -44,20 +42,21 @@ func ReadBooksWithWorkerPool(path string) error {
 		close(results)
 	}()
 
-	Booklar = make([]models.Book, 5)
+	BookList = make([]models.Book, 5)
 	var i int = 0
 	for v := range results {
-		Booklar[i] = v
+		BookList[i] = v
 		i++
 	}
 	return nil
 }
 
+//func toStruct reads given csv file by line and pushes them to result channel.
 func toStruct(jobs <-chan []string, results chan<- models.Book, wg *sync.WaitGroup) {
 	defer wg.Done()
 	fmt.Println()
 	for j := range jobs {
-		location := models.Book{
+		books := models.Book{
 			Book_ID:    j[0],
 			Book_Name:  j[1],
 			Book_Page:  j[2],
@@ -67,8 +66,7 @@ func toStruct(jobs <-chan []string, results chan<- models.Book, wg *sync.WaitGro
 			Book_ISBN:  j[6],
 			Author:     j[7],
 		}
-		//process...
 
-		results <- location
+		results <- books
 	}
 }

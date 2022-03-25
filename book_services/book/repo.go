@@ -28,23 +28,9 @@ func (c *BookRepository) FindByAuthor(Author string) []Book {
 	return books
 }
 
-func (c *BookRepository) FindByAuthorCodeOrBookCode(code string) []Book {
-	var books []Book
-	c.db.Where(`"Author = ?"`, code).Or("code = ?", code).Find(&books)
-
-	return books
-}
-
 func (c *BookRepository) FindByName(name string) []Book {
 	var books []Book
 	c.db.Where("name LIKE ? ", "%"+name+"%").Find(&books)
-
-	return books
-}
-
-func (c *BookRepository) FindByNameWithRawSQL(name string) []Book {
-	var books []Book
-	c.db.Raw("SELECT * FROM Book WHERE name LIKE ?", "%"+name+"%").Scan(&books)
 
 	return books
 }
@@ -57,26 +43,6 @@ func (c *BookRepository) GetByID(id int) (*Book, error) {
 	}
 
 	return &book, nil
-}
-
-func (c *BookRepository) Create(book Book) error {
-	result := c.db.Create(book)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-
-func (c *BookRepository) Update(book Book) error {
-	result := c.db.Save(book)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
 }
 
 func (c *BookRepository) Delete(book Book) error {
@@ -103,19 +69,10 @@ func (c *BookRepository) Migrations() {
 	c.db.AutoMigrate(&Book{})
 }
 
+// Func InsertSampleData starts a concurrent csv reading operation and write them to database.
 func (c *BookRepository) InsertSampleData() {
 	csv_utils.ReadBooksWithWorkerPool("books.csv")
-	for _, book := range csv_utils.Booklar {
-		/* c.db.Where(Book{Book_Name: book.Book_Name}).
-		Attrs(Book{
-			Book_Name: book.Book_Name,
-			Book_ID: book.Book_ID,
-			Book_Price: book.Book_Price,
-			Book_Page: book.Book_Page,
-			Book_Stock: book.Book_Stock,
-			Book_Scode: book.Book_Scode,
-			Book_ISBN: book.Book_ISBN,}).
-		FirstOrCreate(&book) */
+	for _, book := range csv_utils.BookList {
 		c.db.Create(&Book{
 			Book_ID:    book.Book_ID,
 			Book_Name:  book.Book_Name,
