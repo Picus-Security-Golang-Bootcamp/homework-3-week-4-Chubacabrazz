@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// new database connection
 func NewPsqlDB() (*gorm.DB, error) {
 
 	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
