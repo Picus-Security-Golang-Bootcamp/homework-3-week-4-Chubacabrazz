@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/Chubacabrazz/book-db/book_services/author"
 	book "github.com/Chubacabrazz/book-db/book_services/book"
 	postgres "github.com/Chubacabrazz/book-db/db"
 	"github.com/joho/godotenv"
@@ -23,13 +24,16 @@ func main() {
 	// Repositories
 	bookRepo := book.NewBookRepository(db)
 	bookRepo.Migrations()
-	bookRepo.InsertSampleData()
-	bookRepo.FindAll()
+	/* bookRepo.InsertData()
+	bookRepo.Buy(<quantity> , <ID>)
+	bookRepo.FindByAuthor(<authorname>)
+	bookRepo.SoftDeletebyID(<ID>)
+	bookRepo.List() */
 
-	/* authorRepo := author.NewAuthorRepository(db)
+	authorRepo := author.NewAuthorRepository(db)
 	authorRepo.Migration()
-	authorRepo.InsertSampleData()
-
-	fmt.Println(authorRepo.GetAllAuthorsWithBookInformation()) */
+	/* authorRepo.InsertData()
+	authorRepo.List()
+	authorRepo.FindByWord(<name>) */
 
 }

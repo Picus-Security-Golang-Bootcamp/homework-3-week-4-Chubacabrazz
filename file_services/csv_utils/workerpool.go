@@ -65,6 +65,7 @@ func toStruct(jobs <-chan []string, results chan<- models.Book, wg *sync.WaitGro
 			Book_Scode: j[5],
 			Book_ISBN:  j[6],
 			Author:     j[7],
+			Author_ID:  j[8],
 		}
 
 		results <- books

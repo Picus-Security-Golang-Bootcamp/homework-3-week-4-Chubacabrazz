@@ -8,7 +8,8 @@ type Book struct {
 	Book_Price string `json:"Book_Price"`
 	Book_Scode string `json:"Book_Scode"`
 	Book_ISBN  string `json:"Book_ISBN"`
-	Author     string `json:"Book_Author"`
+	Author     string `json:"Author"`
+	Author_ID  string `json:"Author_ID"`
 }
 
 type BookSlice []Book

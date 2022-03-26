@@ -1,13 +1,17 @@
 package author
 
 import (
-	book "github.com/Chubacabrazz/book-db/book_services/book"
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
 type Author struct {
 	gorm.Model
-	Book_ID   string /* `gorm:"unique"` */
-	Book_Name string
-	Books     []book.Book `gorm:"foreignKey:Author;references:Book_Name"`
+	Author_ID   string
+	Author_Name string
+}
+
+func (c *Author) ToString() string {
+	return fmt.Sprintf("Book_ID : %s, Book_Name : %s", c.Author_ID, c.Author_Name)
 }

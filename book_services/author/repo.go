@@ -1,6 +1,11 @@
 package author
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"github.com/Chubacabrazz/book-db/file_services/csv_utils"
+	"gorm.io/gorm"
+)
 
 type AuthorRepository struct {
 	db *gorm.DB
@@ -12,51 +17,54 @@ func NewAuthorRepository(db *gorm.DB) *AuthorRepository {
 	}
 }
 
-func (c *AuthorRepository) GetAllAuthorsWithBookInformation() ([]Author, error) {
+//FindByWord lists the authors with the given word case-insensitively
+func (a *AuthorRepository) FindByWord(name string) {
 	var authors []Author
-	result := c.db.Preload("Books").Find(&authors)
-	if result.Error != nil {
-		return nil, result.Error
+	a.db.Where("name ILIKE ? ", "%"+name+"%").Find(&authors)
+
+	for _, author := range authors {
+		fmt.Println(author.ToString())
 	}
-	return authors, nil
 }
 
-func (c *AuthorRepository) GetAuthorWithName(name string) (*Author, error) {
-	var author *Author
-	result := c.db.
-		Where(Author{Book_ID: name}).
-		Attrs(Author{Book_Name: "NULL", Book_ID: "NULL"}).
-		FirstOrInit(&author) // Eğer sorgu sonucunda veri bulunursa Attrs kısmında yazılanlar ignore edilir.
+//Func List prints all authors from db
+func (a *AuthorRepository) List() {
+	var authors []Author
+	a.db.Find(&authors)
 
-	if result.Error != nil {
-		return nil, result.Error
+	for _, author := range authors {
+		fmt.Println(author.ToString())
 	}
-
-	return author, nil
 }
 
-func (c *AuthorRepository) GetAllAuthorsWithoutBookInformation() ([]Author, error) {
-	var authors []Author
-	result := c.db.Find(&authors)
+//DeleteByID does a soft delete to an author with given ID
+func (a *AuthorRepository) DeleteById(id int) error {
+	var author Author
+	result := a.db.First(&author, id)
+	if result.Error != nil {
+		return result.Error
+	} else {
+		fmt.Println("Success, soft deleted:", id)
+	}
+	result = a.db.Delete(&Author{}, id)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
 
-	return authors, nil
+	return nil
 }
 
 func (c *AuthorRepository) Migration() {
 	c.db.AutoMigrate(&Author{})
 }
 
-func (c *AuthorRepository) InsertSampleData() {
-	books := []Author{
-		{Book_ID: "Türkiye", Book_Name: "TR"},
-		{Book_ID: "Amerika", Book_Name: "US"},
+// Func InsertData starts a concurrent csv reading operation and write them to database.
+func (c *AuthorRepository) InsertData() {
+	for _, book := range csv_utils.BookList {
+		c.db.FirstOrCreate(Author{
+			Author_ID:   book.Author_ID,
+			Author_Name: book.Author})
 	}
 
-	for _, book := range books {
-		c.db.Create(&book)
-	}
 }

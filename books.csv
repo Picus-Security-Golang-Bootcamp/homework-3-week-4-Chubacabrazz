@@ -1,6 +1,6 @@
-Book_ID,Book_Name,Book_Page,Book_Stock,Book_Price,Book_Scode,Book_ISBN,Book_Author
-30,Lord Of The Rings: The Two Towers,450,2,75,12345,163548172648,JRR Tolkien
-31,Harry Potter,250,4,50,12347,182749102984,JK Rowling
-32,Dune,700,4,80,12398,183756472849,Frank Herbert
-33,Witcher,300,16,45,12376,172649172940,Andrzej Sapkowski
-34,Lord Of The Rings: The Fellowship Of The Ring,420,5,100,12359,192847561827,JRR Tolkien
+Book_ID,Book_Name,Book_Page,Book_Stock,Book_Price,Book_Scode,Book_ISBN,Author,Author_ID
+30,Lord Of The Rings: The Two Towers,450,2,75,12345,163548172648,JRR Tolkien,1
+31,Harry Potter,250,4,50,12347,182749102984,JK Rowling,2
+32,Dune,700,4,80,12398,183756472849,Frank Herbert,3
+33,Witcher,300,16,45,12376,172649172940,Andrzej Sapkowski,4
+34,Lord Of The Rings: The Fellowship Of The Ring,420,5,100,12359,192847561827,JRR Tolkien,1
